@@ -71,6 +71,23 @@ document.addEventListener("DOMContentLoaded", () => {
         return guessedWords[numberOfGuessedWords - 1]
     }
 
+    function deleteLetter()
+    {
+       console.log("Deleting: ");
+        const currentWordArr = getCurrentWordArr();
+
+        if (currentWordArr && currentWordArr.length > 0){
+            guessedWords[guessedWords.length - 1].pop();
+
+            const availableSpaceEl = document.getElementById(availableSpace - 1);
+            availableSpace = availableSpace - 1;
+
+            availableSpaceEl.textContent = "";
+           
+        }
+
+    }
+
     function updateGuessedWords(letter){
         const currentWordArr = getCurrentWordArr()
 
@@ -104,6 +121,12 @@ document.addEventListener("DOMContentLoaded", () => {
             if(letter === 'enter')
             {
                 handleSubmitWord();
+                return;
+            }
+
+            if(letter === 'del')
+            {
+                deleteLetter();
                 return;
             }
 
