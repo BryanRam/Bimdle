@@ -59,6 +59,8 @@ header{
     border: 2px solid rgb(58, 58, 60);
     min-width: 60px;
     min-height: 60px;
+    max-height: 60px;
+    max-width: 60px;
     font-size: 50px;
     font-weight: bold;
     color: gainsboro;
