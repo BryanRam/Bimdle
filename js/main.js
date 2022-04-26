@@ -1,4 +1,19 @@
-document.addEventListener("DOMContentLoaded", () => {
+// const express = require("express")
+// const mongoose = require("mongoose") // new
+
+// // Connect to MongoDB database
+// mongoose
+// 	.connect("mongodb://localhost:27017/acmedb", { useNewUrlParser: true })
+// 	.then(() => {
+// 		const app = express()
+
+// 		app.listen(5000, () => {
+// 			console.log("Server has started!")
+// 		})
+// 	})
+$(document).ready(function(){
+
+//document.addEventListener("DOMContentLoaded", () => {
     createSquares();
 
     let guessedWords = [[]];
@@ -6,6 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let word = "bajan";
     let guessedWordCount = 0;
     let guessed = false;
+    $('#exampleModal').modal({ show: false});
 
     const keys = document.querySelectorAll(".keyboard-row button");
 
@@ -69,11 +85,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (currentWord === word){
                 guessed = true;
-                window.alert("Congratulations!");
+                //window.alert("Congratulations!");
+                $('#exampleModal').modal('show'); 
             }
 
             if(guessedWords.length === 6){
-                window.alert(`Sorry you have no more guesses! The word is ${word}.`)
+                //window.alert(`Sorry you have no more guesses! The word is ${word}.`)
+                $('#exampleModal').modal('show');
             }
 
             guessedWords.push([]);
