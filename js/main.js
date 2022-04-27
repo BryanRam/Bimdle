@@ -125,8 +125,9 @@ $(document).ready(function(){
                 $('#exampleModal').modal('show'); 
             }
 
-            if(guessedWords.length === 6){
+            if(guessedWords.length === 6 && currentWord !== word){
                 //window.alert(`Sorry you have no more guesses! The word is ${word}.`)
+                guessedWordCount = "X";
                 $('#exampleModal').modal('show');
             }
 
