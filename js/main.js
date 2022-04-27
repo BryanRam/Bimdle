@@ -17,38 +17,62 @@ $(document).ready(function(){
     createSquares();
 
     let guessedWords = [[]];
+    let guessedWordsText = "";
+    let correctLetterColour = "rgb(83, 141, 78)";
+    let wrongLetterPosColour = "rgb(181, 159, 59)";
+    let wrongLetterColour = "rgb(58, 58, 60)";
+
+    let correctColourEmoji = "🟩";
+    let wrongPosColourEmoji = "🟨";
+    let wrongColourEmoji = "⬛";
+
     let availableSpace = 1;
     let word = "bajan";
     let guessedWordCount = 0;
     let guessed = false;
+    let shareButton = document.getElementById("sharebutton");
     $('#exampleModal').modal({ show: false});
 
     const keys = document.querySelectorAll(".keyboard-row button");
+
+    shareButton.addEventListener('click', event => {
+        if (navigator.share) {
+          navigator.share({
+            title: 'WebShare API Demo',
+            text: "Bimdle " + guessedWordCount + "/6\n\n" + guessedWordsText
+          }).then(() => {
+            console.log('Thanks for sharing!');
+          })
+          .catch(console.error);
+        } else {
+          // fallback
+        }
+      });
 
 
     function getTileColor(letter, index){
         const isCorrectLetter = word.includes(letter);
 
         if (!isCorrectLetter){
-            return "rgb(58, 58, 60)";
+            return wrongLetterColour;
         }
 
         const letterInThatPosition = word.charAt(index);
         const isCorrectPosition = (letter === letterInThatPosition);
 
         if (isCorrectPosition){
-            return "rgb(83, 141, 78)";
+            return correctLetterColour;
 
         }
         
 
-        return "rgb(181, 159, 59)";
+        return wrongLetterPosColour;
     }
    
 
     function handleSubmitWord(){
         const currentWordArr = getCurrentWordArr()
-        
+       
         
         const firstLetterId = guessedWordCount * 5 + 1;
         const interval = 200;
@@ -59,11 +83,22 @@ $(document).ready(function(){
         }
         else
         {
+            
             currentWordArr.forEach((letter, index) => {
                 setTimeout(() => {
                     const tileColor = getTileColor(letter, index);
                     const letterId = firstLetterId + index;
                     const letterEl = document.getElementById(letterId);
+                    console.log("gwc: " + guessedWordCount);
+                    console.log("text: " + guessedWordsText.length);
+
+                    if(tileColor == correctLetterColour)
+                        guessedWordsText += correctColourEmoji;
+                    if(tileColor == wrongLetterPosColour)
+                        guessedWordsText += wrongPosColourEmoji;
+                    if(tileColor == wrongLetterColour)
+                        guessedWordsText += wrongColourEmoji;    
+                        
                     letterEl.classList.add("animate__flipInX");
                     letterEl.style = `background-color:${tileColor};border-color:${tileColor}`;
 
@@ -73,6 +108,7 @@ $(document).ready(function(){
 
             
             });
+            setTimeout(() => {guessedWordsText += "\n";}, ((interval * 5)+1));
 
             guessedWordCount += 1;
 
