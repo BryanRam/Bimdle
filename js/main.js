@@ -18,6 +18,7 @@ $(document).ready(function(){
 
     let guessedWords = [[]];
     let guessedWordsText = "";
+    let localWordStore = ["","","","","",""];
     let correctLetterColour = "rgb(83, 141, 78)";
     let wrongLetterPosColour = "rgb(181, 159, 59)";
     let wrongLetterColour = "rgb(58, 58, 60)";
@@ -27,8 +28,9 @@ $(document).ready(function(){
     let wrongColourEmoji = "⬛";
 
     let availableSpace = 1;
-    let word = "bajan";
+    let word = wordClone = "bajan";
     let guessedWordCount = 0;
+    let incorrectPosCount = 0;
     let guessed = false;
     let shareButton = document.getElementById("sharebutton");
     $('#exampleModal').modal({ show: false});
@@ -95,7 +97,12 @@ $(document).ready(function(){
 
 
     function getTileColor(letter, index){
-        const isCorrectLetter = word.includes(letter);
+        const isCorrectLetter = wordClone.includes(letter);
+        // for(var i=0; i<word.length; i++)
+        //     {
+        //         if()
+        //     }
+        console.log("wordclone: " + wordClone);
 
         if (!isCorrectLetter){
             return wrongLetterColour;
@@ -131,6 +138,12 @@ $(document).ready(function(){
             currentWordArr.forEach((letter, index) => {
                 setTimeout(() => {
                     const tileColor = getTileColor(letter, index);
+                    wordClone = wordClone.split('');
+                    selectedIndex = wordClone.indexOf(letter);
+                    if(selectedIndex > -1)
+                        wordClone.splice(selectedIndex, 1);
+
+                    wordClone = wordClone.join('');
                     const letterId = firstLetterId + index;
                     const letterEl = document.getElementById(letterId);
                     console.log("gwc: " + guessedWordCount);
@@ -150,9 +163,12 @@ $(document).ready(function(){
                     //console.log(currWord);
                 }, interval * index);
 
-            
+                
             });
-            setTimeout(() => {guessedWordsText += "\n";}, ((interval * 5)+1));
+            setTimeout(() => {
+                guessedWordsText += "\n";
+                wordClone = word;
+            }, ((interval * 5)+1));
 
             guessedWordCount += 1;
 
@@ -162,17 +178,19 @@ $(document).ready(function(){
             const currentWord = currentWordArr.join("");
             console.log(currentWord);
             console.log(word)
+            localWordStore[guessedWordCount-1] = currentWord;
+            localStorage.setItem("boardstate", localWordStore);
 
             if (currentWord === word){
                 guessed = true;
                 //window.alert("Congratulations!");
-                $('#statisticsModal').modal('show'); 
+                setTimeout(() => {$('#statisticsModal').modal('show')}, ((interval * 5)+1)); 
             }
 
             if(guessedWords.length === 6 && currentWord !== word){
                 //window.alert(`Sorry you have no more guesses! The word is ${word}.`)
                 guessedWordCount = "X";
-                $('#statisticsModal').modal('show');
+                setTimeout(() => {$('#statisticsModal').modal('show')}, ((interval * 5)+1));
             }
 
             guessedWords.push([]);
@@ -227,6 +245,12 @@ $(document).ready(function(){
         }
     }
 
+        if(localStorage.getItem("boardstate"))
+        {
+            localWordStore = localStorage.getItem("boardstate");
+            console.log("Reading local storage");
+            console.log(localWordStore);
+        }
     
         for(let i = 0; i< keys.length; i++)
         {
