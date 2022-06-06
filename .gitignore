@@ -168,3 +168,6 @@ dist
 *.code-workspace
 
 # End of https://www.toptal.com/developers/gitignore/api/node,visualstudiocode
+js/main.js
+.vs/slnx.sqlite
+hamburger-menu-svgrepo-com.svg

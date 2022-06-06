@@ -33,6 +33,7 @@ $(document).ready(function(){
     let incorrectPosCount = 0;
     let guessed = false;
     let shareButton = document.getElementById("sharebutton");
+    let statsButton = document.getElementById("statistics-button");
     $('#exampleModal').modal({ show: false});
 
     const keys = document.querySelectorAll(".keyboard-row button");
@@ -94,6 +95,10 @@ $(document).ready(function(){
           // fallback
         }
       });
+    
+    statsButton.addEventListener('click', event => {
+        $('#statisticsModal').modal('show');
+    });  
 
 
     function getTileColor(letter, index){
@@ -118,6 +123,78 @@ $(document).ready(function(){
         
 
         return wrongLetterPosColour;
+    }
+
+    function handleSubmitHistory(){
+        const interval = 200;
+
+        let currWord = [];
+
+
+        currentWordArr.forEach((letter, index) => {
+            setTimeout(() => {
+                const tileColor = getTileColor(letter, index);
+                wordClone = wordClone.split('');
+                selectedIndex = wordClone.indexOf(letter);
+                if (selectedIndex > -1)
+                    wordClone.splice(selectedIndex, 1);
+
+                wordClone = wordClone.join('');
+                const letterId = firstLetterId + index;
+                const letterEl = document.getElementById(letterId);
+                console.log("gwc: " + guessedWordCount);
+                console.log("text: " + guessedWordsText.length);
+
+                if (tileColor == correctLetterColour)
+                    guessedWordsText += correctColourEmoji;
+                if (tileColor == wrongLetterPosColour)
+                    guessedWordsText += wrongPosColourEmoji;
+                if (tileColor == wrongLetterColour)
+                    guessedWordsText += wrongColourEmoji;
+
+                letterEl.classList.add("animate__flipInX");
+                letterEl.style = `background-color:${tileColor};border-color:${tileColor}`;
+
+                //currWord.push(letter);
+                //console.log(currWord);
+            }, interval * index);
+
+
+        });
+        setTimeout(() => {
+            guessedWordsText += "\n";
+            wordClone = word;
+        }, ((interval * 5) + 1));
+
+        guessedWordCount += 1;
+
+
+
+        //const currentWord = currWord;
+        const currentWord = currentWordArr.join("");
+        console.log(currentWord);
+        console.log(word)
+        localWordStore[guessedWordCount - 1] = currentWord;
+        localStorage.setItem("boardstate", localWordStore);
+
+        if (currentWord === word) {
+            guessed = true;
+            //window.alert("Congratulations!");
+            setTimeout(() => {
+                $('#statisticsModal').modal('show')
+            }, ((interval * 5) + 1));
+        }
+
+        if (guessedWords.length === 6 && currentWord !== word) {
+            //window.alert(`Sorry you have no more guesses! The word is ${word}.`)
+            guessedWordCount = "X";
+            setTimeout(() => {
+                $('#statisticsModal').modal('show')
+            }, ((interval * 5) + 1));
+        }
+
+        guessedWords.push([]);
+        
     }
    
 
