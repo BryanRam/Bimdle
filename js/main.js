@@ -34,6 +34,7 @@ $(document).ready(function(){
     let guessed = false;
     let shareButton = document.getElementById("sharebutton");
     let statsButton = document.getElementById("statistics-button");
+    let statsButtonClose = document.getElementById("dismissStats");
     $('#exampleModal').modal({ show: false});
 
     const keys = document.querySelectorAll(".keyboard-row button");
@@ -99,6 +100,11 @@ $(document).ready(function(){
     statsButton.addEventListener('click', event => {
         $('#statisticsModal').modal('show');
     });  
+
+    statsButtonClose.addEventListener('click', event => {
+        console.log("Clicked dismiss");
+        $('#statisticsModal').modal('hide');
+    })
 
 
     function getTileColor(letter, index){

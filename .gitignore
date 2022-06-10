@@ -171,3 +171,6 @@ dist
 js/main.js
 .vs/slnx.sqlite
 hamburger-menu-svgrepo-com.svg
+.vs/ProjectSettings.json
+.vs/VSWorkspaceState.json
+.vs/Bimdle/v16/.suo
