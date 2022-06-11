@@ -35,6 +35,8 @@ $(document).ready(function(){
     let shareButton = document.getElementById("sharebutton");
     let statsButton = document.getElementById("statistics-button");
     let statsButtonClose = document.getElementById("dismissStats");
+    let settingsButton = document.getElementById("settings-button");
+    let settingsButtonClose = document.getElementById("dismissSettings");
     $('#exampleModal').modal({ show: false});
 
     const keys = document.querySelectorAll(".keyboard-row button");
@@ -104,6 +106,14 @@ $(document).ready(function(){
     statsButtonClose.addEventListener('click', event => {
         console.log("Clicked dismiss");
         $('#statisticsModal').modal('hide');
+    })
+
+    settingsButton.addEventListener('click', event => {
+        $('#settingsModal').modal('show');
+    })
+
+    settingsButtonClose.addEventListener('click', event => {
+        $('#settingsModal').modal('hide');
     })
 
 
