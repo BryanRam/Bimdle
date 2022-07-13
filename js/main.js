@@ -258,19 +258,22 @@ $(document).ready(function(){
             for(let j=0; j<5; j++)
             {
                 let index = (i*5) + j;
+                console.log(index);
                 console.log(wordHistory[index]);
                 setTimeout(() => {
-                    const tileColor = colourHistory[index];
+                    const tileColor = localWordColour[index];
+                    console.log("In timeout");
+                    console.log(index);
                     // wordClone = wordClone.split('');
                     // selectedIndex = wordClone.indexOf(letter);
                     // if (selectedIndex > -1)
                     //     wordClone.splice(selectedIndex, 1);
     
                     // wordClone = wordClone.join('');
-                    const letterId = index;
+                    const letterId = index+1;
                     const letterEl = document.getElementById(letterId);
-                    console.log("gwc: " + guessedWordCount);
-                    console.log("text: " + guessedWordsText.length);
+                    // console.log("gwc: " + guessedWordCount);
+                    // console.log("text: " + guessedWordsText.length);
     
                     if (tileColor == correctLetterColour)
                         guessedWordsText += correctColourEmoji;
@@ -281,9 +284,14 @@ $(document).ready(function(){
     
                     letterEl.classList.add("animate__flipInX");
                     letterEl.style = `background-color:${tileColor};border-color:${tileColor}`;
+
+                    const availableSpaceEl = document.getElementById(letterId);
+        
+                    availableSpaceEl.textContent = wordHistory[index];
     
                     //currWord.push(letter);
                     //console.log(currWord);
+                    
                 }, interval * (j));
             }
         }
