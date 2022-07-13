@@ -251,15 +251,20 @@ $(document).ready(function(){
         console.log(wordHistory);
         let localWordCount = wordHistory.length/5;
         console.log(localWordCount);    
+        const currentWordArr = getCurrentWordArr();
 
         for(let i=0; i<localWordCount; i++)
         {
+            currWord = [];
             console.log("Pass #" + i);
             for(let j=0; j<5; j++)
             {
                 let index = (i*5) + j;
                 console.log(index);
                 console.log(wordHistory[index]);
+                currentWordArr.push(wordHistory[index]);
+                currWord.push(wordHistory[index]);
+                availableSpace += 1;
                 setTimeout(() => {
                     const tileColor = localWordColour[index];
                     console.log("In timeout");
@@ -294,9 +299,12 @@ $(document).ready(function(){
                     
                 }, interval * (j));
             }
+            guessedWordCount += 1;
+            
         }
 
-
+        console.log("Available Space " + availableSpace);
+       
         // currentWordArr.forEach((letter, index) => {
         //     setTimeout(() => {
         //         const tileColor = getTileColor(letter, index);
@@ -332,33 +340,33 @@ $(document).ready(function(){
         //     wordClone = word;
         // }, ((interval * 5) + 1));
 
-        guessedWordCount = localWordCount;
+        
 
 
 
         //const currentWord = currWord;
-        // const currentWord = currentWordArr.join("");
-        // console.log(currentWord);
+        const currentWord = currWord.join("");
+        console.log(currentWord);
         // console.log(word)
         
 
-        // if (currentWord === word) {
-        //     guessed = true;
-        //     //window.alert("Congratulations!");
-        //     setTimeout(() => {
-        //         $('#statisticsModal').modal('show')
-        //     }, ((interval * 5) + 1));
-        // }
+        if (currentWord === word) {
+            guessed = true;
+            //window.alert("Congratulations!");
+            setTimeout(() => {
+                $('#statisticsModal').modal('show')
+            }, ((interval * 5) + 1));
+        }
 
-        // if (guessedWords.length === 6 && currentWord !== word) {
-        //     //window.alert(`Sorry you have no more guesses! The word is ${word}.`)
-        //     guessedWordCount = "X";
-        //     setTimeout(() => {
-        //         $('#statisticsModal').modal('show')
-        //     }, ((interval * 5) + 1));
-        // }
+        if (guessedWords.length === 6 && currentWord !== word) {
+            //window.alert(`Sorry you have no more guesses! The word is ${word}.`)
+            guessedWordCount = "X";
+            setTimeout(() => {
+                $('#statisticsModal').modal('show')
+            }, ((interval * 5) + 1));
+        }
 
-        // guessedWords.push([]);
+        guessedWords.push([]);
         
     }
 
@@ -413,6 +421,7 @@ $(document).ready(function(){
     */
 
     function updateGuessedWords(letter){
+        
         const currentWordArr = getCurrentWordArr()
 
         if (currentWordArr && currentWordArr.length < 5){
@@ -509,8 +518,10 @@ $(document).ready(function(){
             //     }
             // }
 
-            handleSubmitHistory()
-        
+            localWordColour = localStorage.getItem("colourstate");
+
+            //handleSubmitHistory()
+            console.log("First Letter ID: " + (guessedWordCount * 5 + 1));
         }
     
         for(let i = 0; i< keys.length; i++)
