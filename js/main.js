@@ -19,6 +19,7 @@ $(document).ready(function(){
     let guessedWordsText = "";
     let localWordStore = [[]];
     let localWordColour = [[]];
+    let localBoardObj = null;
     let localLastPlayedTime = Date.now();
     let localGuessedWords = [];
     let localGuessedWordCount = 0;
@@ -170,8 +171,10 @@ $(document).ready(function(){
         {
             
             currentWordArr.forEach((letter, index) => {
+                const tileColor = getTileColor(letter, index);
+                localWordColour[localWordColour.length - 1].push(tileColor);
                 setTimeout(() => {
-                    const tileColor = getTileColor(letter, index);
+                    //const tileColor = getTileColor(letter, index);
                     wordClone = wordClone.split('');
                     selectedIndex = wordClone.indexOf(letter);
                     if(selectedIndex > -1)
@@ -217,10 +220,11 @@ $(document).ready(function(){
             console.log("Word colour");
             console.log(localWordColour);
             
-            localWordColour[guessedWordCount-1] = currWord;
+            //localWordColour[guessedWordCount-1] = currWord;
             localStorage.setItem("boardstate", localWordStore);
-            localStorage.setItem("colourstate", localWordColour);
-            
+            //localStorage.setItem("colourstate", localWordColour);
+            let boardObj = {boardstate: guessedWords, colourstate: localWordColour, lastPlayed: Date.now()};
+            localStorage.setItem("boardObj", JSON.stringify(boardObj));
 
             if (currentWord === word){
                 guessed = true;
@@ -235,6 +239,7 @@ $(document).ready(function(){
             }
 
             guessedWords.push([]);
+            localWordColour.push([]);
         }
     }
 
@@ -242,31 +247,35 @@ $(document).ready(function(){
         const interval = 200;
  
         let currWord = [];
-        localWordStore = localStorage.getItem("boardstate");
-        localWordColour = localStorage.getItem("colourstate");
+        localWordStore = localBoardObj.boardstate;
+        localWordColour = localBoardObj.colourstate;
         console.log("Reading local storage");
         console.log(localWordStore);
-        let wordHistory = localWordStore.split(",");
-        let colourHistory = localWordColour.split(",");
-        console.log(wordHistory);
-        let localWordCount = wordHistory.length/5;
-        console.log(localWordCount);    
+        console.log(localGuessedWordCount);
+        // let wordHistory = localWordStore.split(",");
+        // let colourHistory = localWordColour.split(",");
+        // console.log(wordHistory);
+        // let localWordCount = wordHistory.length/5;
+        //console.log(localWordCount);    
         const currentWordArr = getCurrentWordArr();
 
-        for(let i=0; i<localWordCount; i++)
+        for(let i=0; i<localGuessedWordCount; i++)
         {
             currWord = [];
             console.log("Pass #" + i);
-            for(let j=0; j<5; j++)
+            for(let j=0; j<localWordStore[i].length; j++)
             {
                 let index = (i*5) + j;
                 console.log(index);
-                console.log(wordHistory[index]);
-                currentWordArr.push(wordHistory[index]);
-                currWord.push(wordHistory[index]);
+                //console.log(wordHistory[index]);
+                console.log("Local letter: " + localWordStore[i][j]);
+
+                //currentWordArr.push(wordHistory[index]);
+                //currWord.push(wordHistory[index]);
                 availableSpace += 1;
                 setTimeout(() => {
-                    const tileColor = localWordColour[index];
+                    //const tileColor = localWordColour[index];
+                    const tileColor = localWordColour[i][j];
                     console.log("In timeout");
                     console.log(index);
                     // wordClone = wordClone.split('');
@@ -292,13 +301,15 @@ $(document).ready(function(){
 
                     const availableSpaceEl = document.getElementById(letterId);
         
-                    availableSpaceEl.textContent = wordHistory[index];
+                    availableSpaceEl.textContent = localWordStore[i][j];
     
                     //currWord.push(letter);
                     //console.log(currWord);
                     
                 }, interval * (j));
+                guessedWords.push(localWordStore[j]);
             }
+            
             guessedWordCount += 1;
             
         }
@@ -462,6 +473,7 @@ $(document).ready(function(){
         {
             let today = Date.now();
             let localDate = localStorage.getItem("lastPlayed");
+            //localStorage.removeItem("boardObj");
             //Need to convert timestamp from localstorage to something that works with Date functions
 
             let todayDay = new Date(today).setHours(0,0,0,0);
@@ -470,15 +482,24 @@ $(document).ready(function(){
             {
                 console.log("Same Day");
                 console.log(localDate);
-                localWordStore = localStorage.getItem("boardstate");
-                localWordColour = localStorage.getItem("colourstate");
+                if(localStorage.getItem("boardObj"))
+                {
+                    localBoardObj = JSON.parse(localStorage.getItem("boardObj"));
 
-                //console.log("length of store: " +  localWordStore.length);
-                console.log(localWordColour);
+                    //localWordColour = localStorage.getItem("colourstate");
+                    localGuessedWordCount = localBoardObj.boardstate.length;
+                    console.log("length of store: " +  localBoardObj.boardstate.length);
+                    //console.log(localWordColour);
+                    handleSubmitHistory();
+                    
 
-                //While localWords length hasn't been reached
-                //    handleSubmitHistory();
-                //Endwhile
+                    console.log("Guessed word count: " + guessedWordCount);
+                    console.log("GuessedWords arr");
+                    console.log(guessedWords);
+                    //While localWords length hasn't been reached
+                    //    handleSubmitHistory();
+                    //Endwhile
+                }
             }else{
                 console.log("Not the same day!");
                 console.log(localDate);
@@ -499,30 +520,30 @@ $(document).ready(function(){
         }
 
 
-        if(localStorage.getItem("boardstate"))
-        {
-            // localWordStore = localStorage.getItem("boardstate");
-            // console.log("Reading local storage");
-            // console.log(localWordStore);
-            // let wordHistory = localWordStore.split(",");
-            // console.log(wordHistory);
-            // let localWordCount = wordHistory.length/5;
-            // console.log(localWordCount);
+        // if(localStorage.getItem("boardstate"))
+        // {
+        //     // localWordStore = localStorage.getItem("boardstate");
+        //     // console.log("Reading local storage");
+        //     // console.log(localWordStore);
+        //     // let wordHistory = localWordStore.split(",");
+        //     // console.log(wordHistory);
+        //     // let localWordCount = wordHistory.length/5;
+        //     // console.log(localWordCount);
 
-            // for(let i=0; i<localWordCount; i++)
-            // {
-            //     console.log("Pass #" + i);
-            //     for(let j=0; j<5; j++)
-            //     {
-            //         console.log(wordHistory[(i*5)+j]);
-            //     }
-            // }
+        //     // for(let i=0; i<localWordCount; i++)
+        //     // {
+        //     //     console.log("Pass #" + i);
+        //     //     for(let j=0; j<5; j++)
+        //     //     {
+        //     //         console.log(wordHistory[(i*5)+j]);
+        //     //     }
+        //     // }
 
-            localWordColour = localStorage.getItem("colourstate");
+        //     //localWordColour = localStorage.getItem("colourstate");
 
-            //handleSubmitHistory()
-            console.log("First Letter ID: " + (guessedWordCount * 5 + 1));
-        }
+        //     handleSubmitHistory();
+        //     console.log("First Letter ID: " + (guessedWordCount * 5 + 1));
+        // }
     
         for(let i = 0; i< keys.length; i++)
         {
