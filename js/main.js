@@ -265,6 +265,7 @@ $(document).ready(function(){
             console.log("Pass #" + i);
             for(let j=0; j<localWordStore[i].length; j++)
             {
+                guessedWords.push(localWordStore[i][j]);
                 let index = (i*5) + j;
                 console.log(index);
                 //console.log(wordHistory[index]);
@@ -307,7 +308,7 @@ $(document).ready(function(){
                     //console.log(currWord);
                     
                 }, interval * (j));
-                guessedWords.push(localWordStore[j]);
+                
             }
             
             guessedWordCount += 1;
