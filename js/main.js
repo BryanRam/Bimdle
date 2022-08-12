@@ -273,8 +273,8 @@ $(document).ready(function(){
             console.log("Pass #" + i);
             for(let j=0; j<localWordStore[i].length; j++)
             {
-                let index =  parseInt((i*5) +j);
-                console.log("j: " + j);
+                guessedWords.push(localWordStore[i][j]);
+                let index = (i*5) + j;
                 console.log(index);
                 //console.log(wordHistory[index]);
                 console.log("Local letter: " + localWordStore[i][j]);
