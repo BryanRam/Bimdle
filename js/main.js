@@ -17,6 +17,7 @@ $(document).ready(function(){
 
     let guessedWords = [[]];
     let guessedWordsText = "";
+    let guessedColours = [[]];
     let localWordStore = [[]];
     let localWordColour = [[]];
     let localBoardObj = null;
@@ -157,8 +158,9 @@ $(document).ready(function(){
 
     function handleSubmitWord(){
         const currentWordArr = getCurrentWordArr()
-        localWordStore[guessedWordCount-1] = currentWordArr;
         
+        
+        console.log("Guessed Count: " + guessedWordCount);
         const firstLetterId = guessedWordCount * 5 + 1;
         const interval = 200;
         let currWord =[];
@@ -169,10 +171,12 @@ $(document).ready(function(){
         }
         else
         {
+            localWordStore.push(currentWordArr);
             
             currentWordArr.forEach((letter, index) => {
                 const tileColor = getTileColor(letter, index);
                 localWordColour[localWordColour.length - 1].push(tileColor);
+                guessedColours[localWordColour.length - 1].push(tileColor);
                 setTimeout(() => {
                     //const tileColor = getTileColor(letter, index);
                     wordClone = wordClone.split('');
@@ -223,7 +227,7 @@ $(document).ready(function(){
             //localWordColour[guessedWordCount-1] = currWord;
             localStorage.setItem("boardstate", localWordStore);
             //localStorage.setItem("colourstate", localWordColour);
-            let boardObj = {boardstate: guessedWords, colourstate: localWordColour, lastPlayed: Date.now()};
+            let boardObj = {boardstate: guessedWords, colourstate: guessedColours, lastPlayed: Date.now()};
             localStorage.setItem("boardObj", JSON.stringify(boardObj));
 
             if (currentWord === word){
@@ -239,7 +243,7 @@ $(document).ready(function(){
             }
 
             guessedWords.push([]);
-            localWordColour.push([]);
+            guessedColours.push([]);
         }
     }
 
@@ -247,6 +251,8 @@ $(document).ready(function(){
         const interval = 200;
  
         let currWord = [];
+        guessedWords.pop();
+        guessedColours.pop();
         localWordStore = localBoardObj.boardstate;
         localWordColour = localBoardObj.colourstate;
         console.log("Reading local storage");
@@ -259,13 +265,16 @@ $(document).ready(function(){
         //console.log(localWordCount);    
         const currentWordArr = getCurrentWordArr();
 
+        
+
         for(let i=0; i<localGuessedWordCount; i++)
         {
             currWord = [];
             console.log("Pass #" + i);
             for(let j=0; j<localWordStore[i].length; j++)
             {
-                let index = (i*5) + j;
+                let index =  parseInt((i*5) +j);
+                console.log("j: " + j);
                 console.log(index);
                 //console.log(wordHistory[index]);
                 console.log("Local letter: " + localWordStore[i][j]);
@@ -278,14 +287,10 @@ $(document).ready(function(){
                     const tileColor = localWordColour[i][j];
                     console.log("In timeout");
                     console.log(index);
-                    // wordClone = wordClone.split('');
-                    // selectedIndex = wordClone.indexOf(letter);
-                    // if (selectedIndex > -1)
-                    //     wordClone.splice(selectedIndex, 1);
-    
-                    // wordClone = wordClone.join('');
+                  
                     const letterId = index+1;
                     const letterEl = document.getElementById(letterId);
+                    console.log("Letter ID: " + letterId);
                     // console.log("gwc: " + guessedWordCount);
                     // console.log("text: " + guessedWordsText.length);
     
@@ -307,55 +312,18 @@ $(document).ready(function(){
                     //console.log(currWord);
                     
                 }, interval * (j));
-                guessedWords.push(localWordStore[j]);
+                //guessedWords.push(localWordStore[i][j]);
+                //guessedWords.push(localWordStore[j]);
+                //updateGuessedWords(localWordStore[i][j]);
             }
-            
+            guessedWords.push(localWordStore[i]);
+            guessedColours.push(localWordColour[i]);
             guessedWordCount += 1;
             
         }
 
         console.log("Available Space " + availableSpace);
-       
-        // currentWordArr.forEach((letter, index) => {
-        //     setTimeout(() => {
-        //         const tileColor = getTileColor(letter, index);
-        //         wordClone = wordClone.split('');
-        //         selectedIndex = wordClone.indexOf(letter);
-        //         if (selectedIndex > -1)
-        //             wordClone.splice(selectedIndex, 1);
 
-        //         wordClone = wordClone.join('');
-        //         const letterId = firstLetterId + index;
-        //         const letterEl = document.getElementById(letterId);
-        //         console.log("gwc: " + guessedWordCount);
-        //         console.log("text: " + guessedWordsText.length);
-
-        //         if (tileColor == correctLetterColour)
-        //             guessedWordsText += correctColourEmoji;
-        //         if (tileColor == wrongLetterPosColour)
-        //             guessedWordsText += wrongPosColourEmoji;
-        //         if (tileColor == wrongLetterColour)
-        //             guessedWordsText += wrongColourEmoji;
-
-        //         letterEl.classList.add("animate__flipInX");
-        //         letterEl.style = `background-color:${tileColor};border-color:${tileColor}`;
-
-        //         //currWord.push(letter);
-        //         //console.log(currWord);
-        //     }, interval * index);
-
-
-        // });
-        // setTimeout(() => {
-        //     guessedWordsText += "\n";
-        //     wordClone = word;
-        // }, ((interval * 5) + 1));
-
-        
-
-
-
-        //const currentWord = currWord;
         const currentWord = currWord.join("");
         console.log(currentWord);
         // console.log(word)
@@ -378,7 +346,7 @@ $(document).ready(function(){
         }
 
         guessedWords.push([]);
-        
+        guessedColours.push([]);
     }
 
     function getCurrentWordArr(){
