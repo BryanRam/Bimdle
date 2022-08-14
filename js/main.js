@@ -42,7 +42,7 @@ $(document).ready(function(){
     let statsButtonClose = document.getElementById("dismissStats");
     let settingsButton = document.getElementById("settings-button");
     let settingsButtonClose = document.getElementById("dismissSettings");
-    let guessedStats = [0,0,0,0,0,0]; 
+    let guessedStats = [0,0,0,2,4,0]; 
 
     createSquares();
 
@@ -59,7 +59,7 @@ $(document).ready(function(){
     datasets: [{
         axis: 'y',
         label: '',
-        data: [0, 0, 0, 0, 0, 0],
+        data: guessedStats,
         backgroundColor: [
         'rgba(255, 99, 132, 0.2)',
         'rgba(255, 159, 64, 0.2)',
@@ -335,7 +335,10 @@ $(document).ready(function(){
         if (currentWord === word) {
             guessed = true;
             //window.alert("Congratulations!");
-            //data.datasets.data[localGuessedWordCount-1] += 1;
+            guessedStats[localGuessedWordCount-1] += 1;
+            //removeData(statsChart);
+            //addData(statsChart, '', guessedStats);
+            
             setTimeout(() => {
                 $('#statisticsModal').modal('show')
             }, ((interval * 5) + 1));
@@ -365,6 +368,21 @@ $(document).ready(function(){
         return localGuessedWords[numberOfGuessedWords - 1];
     }
 
+    function addData(chart, label, data) {
+        chart.data.labels.push(label);
+        chart.data.datasets.forEach((dataset) => {
+            dataset.data.push(data);
+        });
+        chart.update();
+    }
+    
+    function removeData(chart) {
+        chart.data.labels.pop();
+        chart.data.datasets.forEach((dataset) => {
+            dataset.data.pop();
+        });
+        chart.update();
+    }
   
 
     function deleteLetter()
