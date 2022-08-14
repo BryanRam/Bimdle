@@ -42,6 +42,7 @@ $(document).ready(function(){
     let statsButtonClose = document.getElementById("dismissStats");
     let settingsButton = document.getElementById("settings-button");
     let settingsButtonClose = document.getElementById("dismissSettings");
+    let guessedStats = [0,0,0,0,0,0]; 
 
     createSquares();
 
@@ -58,7 +59,7 @@ $(document).ready(function(){
     datasets: [{
         axis: 'y',
         label: '',
-        data: [0, 5, 15, 30, 0, 1],
+        data: [0, 0, 0, 0, 0, 0],
         backgroundColor: [
         'rgba(255, 99, 132, 0.2)',
         'rgba(255, 159, 64, 0.2)',
@@ -176,7 +177,7 @@ $(document).ready(function(){
             currentWordArr.forEach((letter, index) => {
                 const tileColor = getTileColor(letter, index);
                 localWordColour[localWordColour.length - 1].push(tileColor);
-                guessedColours[localWordColour.length - 1].push(tileColor);
+                guessedColours[guessedColours.length - 1].push(tileColor);
                 setTimeout(() => {
                     //const tileColor = getTileColor(letter, index);
                     wordClone = wordClone.split('');
@@ -218,11 +219,11 @@ $(document).ready(function(){
 
             //const currentWord = currWord;
             const currentWord = currentWordArr.join("");
-            console.log(currentWord);
-            console.log(word);
-            console.log(currWordColour);
-            console.log("Word colour");
-            console.log(localWordColour);
+           
+            console.log("SubmitWord words arr");
+            console.log(guessedWords);
+            console.log("SubmitWord colours arr");
+            console.log(guessedColours);
             
             //localWordColour[guessedWordCount-1] = currWord;
             localStorage.setItem("boardstate", localWordStore);
@@ -233,7 +234,9 @@ $(document).ready(function(){
             if (currentWord === word){
                 guessed = true;
                 //window.alert("Congratulations!");
+                data.datasets.data[guessedWordCount] += 1;
                 setTimeout(() => {$('#statisticsModal').modal('show')}, ((interval * 5)+1)); 
+                
             }
 
             if(guessedWords.length === 6 && currentWord !== word){
@@ -273,7 +276,7 @@ $(document).ready(function(){
             console.log("Pass #" + i);
             for(let j=0; j<localWordStore[i].length; j++)
             {
-                guessedWords.push(localWordStore[i][j]);
+                //guessedWords.push(localWordStore[i][j]);
                 let index = (i*5) + j;
                 console.log(index);
                 //console.log(wordHistory[index]);
@@ -324,7 +327,7 @@ $(document).ready(function(){
 
         console.log("Available Space " + availableSpace);
 
-        const currentWord = currWord.join("");
+        const currentWord = guessedWords[guessedWords.length - 1].join("");
         console.log(currentWord);
         // console.log(word)
         
@@ -332,6 +335,7 @@ $(document).ready(function(){
         if (currentWord === word) {
             guessed = true;
             //window.alert("Congratulations!");
+            //data.datasets.data[localGuessedWordCount-1] += 1;
             setTimeout(() => {
                 $('#statisticsModal').modal('show')
             }, ((interval * 5) + 1));
@@ -464,6 +468,9 @@ $(document).ready(function(){
                     console.log("Guessed word count: " + guessedWordCount);
                     console.log("GuessedWords arr");
                     console.log(guessedWords);
+
+                    console.log("GuessedColours arr");
+                    console.log(guessedColours);
                     //While localWords length hasn't been reached
                     //    handleSubmitHistory();
                     //Endwhile
