@@ -42,7 +42,7 @@ $(document).ready(function(){
     let statsButtonClose = document.getElementById("dismissStats");
     let settingsButton = document.getElementById("settings-button");
     let settingsButtonClose = document.getElementById("dismissSettings");
-    let guessedStats = [0,0,0,2,4,0]; 
+    let guessedStats = [0,0,0,0,0,0]; 
 
     createSquares();
 
@@ -234,7 +234,10 @@ $(document).ready(function(){
             if (currentWord === word){
                 guessed = true;
                 //window.alert("Congratulations!");
-                data.datasets.data[guessedWordCount] += 1;
+                guessedStats[localGuessedWordCount] += 1;
+                removeData(statsChart);
+                addData(statsChart, '', guessedStats);
+            
                 setTimeout(() => {$('#statisticsModal').modal('show')}, ((interval * 5)+1)); 
                 
             }
@@ -335,9 +338,15 @@ $(document).ready(function(){
         if (currentWord === word) {
             guessed = true;
             //window.alert("Congratulations!");
-            guessedStats[localGuessedWordCount-1] += 1;
-            //removeData(statsChart);
-            //addData(statsChart, '', guessedStats);
+            let num = 0;
+            num = guessedStats[guessedWordCount-1];
+            console.log("num: " + num);
+            guessedStats[guessedWordCount-1] = num+1;
+            console.log("guessed Stats");
+            console.log(guessedStats);
+           
+            removeData(statsChart);
+            addData(statsChart, '', guessedStats);
             
             setTimeout(() => {
                 $('#statisticsModal').modal('show')
